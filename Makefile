@@ -15,7 +15,7 @@ test:
 	pipenv run pytest --cov --cov-fail-under=100
 
 format:
-	pipenv run black mdfind.py tests
+	pipenv run black mdfind.py setup.py tests
 	pipenv run isort -y
 
 clean:
@@ -33,7 +33,7 @@ clean:
 	rm -fr .mypy_cache
 
 ci:
-	pipenv run black --check mdfind.py tests/
+	pipenv run black --check mdfind.py setup.py tests/
 	pipenv run mypy mdfind.py
 	pipenv run pytest --exitfirst tests/
 	pipenv run pytest --cov --cov-fail-under=100
