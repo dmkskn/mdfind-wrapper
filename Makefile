@@ -1,22 +1,22 @@
 build:
-	python setup.py sdist bdist_wheel
+	pipenv run python setup.py sdist bdist_wheel
 
 publish:
-	twine upload dist/*
+	pipenv run twine upload dist/*
 
 pre-commit:
-	pre-commit install
+	pipenv run pre-commit install
 
 mypy:
-	mypy mdfind
+	pipenv run mypy mdfind.py
 
 test:
-	pytest --exitfirst tests/
-	pytest --cov --cov-fail-under=100
+	pipenv run pytest --exitfirst tests/
+	pipenv run pytest --cov --cov-fail-under=100
 
 format:
-	black mdfind tests
-	isort -y
+	pipenv run black mdfind.py tests
+	pipenv run isort -y
 
 clean:
 	rm -fr build/
@@ -33,7 +33,7 @@ clean:
 	rm -fr .mypy_cache
 
 ci:
-	black --check mdfind tests/
-	mypy mdfind
-	pytest --exitfirst tests/
-	pytest --cov --cov-fail-under=100
+	pipenv run black --check mdfind.py tests/
+	pipenv run mypy mdfind.py
+	pipenv run pytest --exitfirst tests/
+	pipenv run pytest --cov --cov-fail-under=100
