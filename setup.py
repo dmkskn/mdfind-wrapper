@@ -13,7 +13,7 @@ def get_long_description() -> str:
 setup(
     name="mdfind-wrapper",
     license="Unlicense",
-    version="0.1.1",
+    version="0.1.2",
     url="https://github.com/dmkskn/mdfind-wrapper",
     author="Dima Koskin",
     author_email="dmksknn@gmail.com",
@@ -22,7 +22,8 @@ setup(
     python_requires=">=3.6",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    py_modules=["mdfind"],
+    packages=["mdfind"],
+    package_data={"mdfind": ["py.typed"]},
     classifiers=[
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3 :: Only",

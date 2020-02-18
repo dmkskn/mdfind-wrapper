@@ -8,14 +8,14 @@ pre-commit:
 	pipenv run pre-commit install
 
 mypy:
-	pipenv run mypy mdfind.py
+	pipenv run mypy mdfind
 
 test:
 	pipenv run pytest --exitfirst tests/
 	pipenv run pytest --cov --cov-fail-under=100
 
 format:
-	pipenv run black mdfind.py setup.py tests
+	pipenv run black mdfind setup.py tests
 	pipenv run isort -y
 
 clean:
@@ -33,7 +33,7 @@ clean:
 	rm -fr .mypy_cache
 
 ci:
-	pipenv run black --check mdfind.py setup.py tests/
-	pipenv run mypy mdfind.py
+	pipenv run black --check mdfind setup.py tests/
+	pipenv run mypy mdfind
 	pipenv run pytest --exitfirst tests/
 	pipenv run pytest --cov --cov-fail-under=100
