@@ -20,9 +20,9 @@ def test_mdfind(run):
 @patch("mdfind._api._mdfind")
 def test_query_calls_mdfind_correct(_mdfind):
     mdfind.query("kind:image", onlyin="~")
-    assert _mdfind.call_args == call("kind:image", "-onlyin", "~")
+    assert _mdfind.call_args == call("-0", "kind:image", "-onlyin", "~")
     mdfind.query("kind:image")
-    assert _mdfind.call_args == call("kind:image")
+    assert _mdfind.call_args == call("-0", "kind:image")
 
 
 @patch("mdfind._api._mdfind", return_value=MDFIND_MOCK_WITH_PATHS)
@@ -48,9 +48,9 @@ def test_query_return_splitted_list(_mdfind):
 @patch("mdfind._api._mdfind")
 def test_name_calls_mdfind_correct(_mdfind):
     mdfind.name("foo")
-    assert _mdfind.call_args == call("-name", "foo",)
+    assert _mdfind.call_args == call("-0", "-name", "foo",)
     mdfind.name("foo", onlyin="~")
-    assert _mdfind.call_args == call("-name", "foo", "-onlyin", "~")
+    assert _mdfind.call_args == call("-0", "-name", "foo", "-onlyin", "~")
 
 
 @patch("mdfind._api._mdfind", return_value=MDFIND_MOCK_WITH_PATHS)
