@@ -2,7 +2,8 @@ from unittest.mock import Mock, call, patch
 
 import mdfind
 
-PATHS_STDOUT = "/foo\n/bar"
+NUL = "\x00"
+PATHS_STDOUT = f"/foo{NUL}/bar"
 COUNT_STDOUT = "0"
 
 MDFIND_MOCK_WITH_PATHS = Mock(returncode=0, stdout=PATHS_STDOUT)
@@ -27,7 +28,7 @@ def test_query_calls_mdfind_correct(_mdfind):
 @patch("mdfind._api._mdfind", return_value=MDFIND_MOCK_WITH_PATHS)
 def test_query_return_splitted_list(_mdfind):
     result = mdfind.query("kind:image", onlyin="~")
-    assert result == PATHS_STDOUT.split("\n")
+    assert result == PATHS_STDOUT.split(NUL)
 
 
 @patch("mdfind._api._mdfind")
@@ -55,4 +56,4 @@ def test_name_calls_mdfind_correct(_mdfind):
 @patch("mdfind._api._mdfind", return_value=MDFIND_MOCK_WITH_PATHS)
 def test_name_return_splitted_list(_mdfind):
     result = mdfind.name("foo", onlyin="~")
-    assert result == PATHS_STDOUT.split("\n")
+    assert result == PATHS_STDOUT.split(NUL)
