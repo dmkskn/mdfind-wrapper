@@ -1,35 +1,27 @@
 """An `mdfind` wrapper"""
-import subprocess
+import subprocess as sp
 from typing import List, Optional
 
 __all__ = ["query", "count", "name"]
 
 
+def _mdfind(*args: str) -> sp.CompletedProcess:
+    return sp.run(["mdfind", *args], capture_output=True, text=True, check=True)
+
+
 def query(query: str, onlyin: Optional[str] = None) -> List[str]:
     """Get a list of files that match the given metadata query."""
-    cmd = ["mdfind", query, *[_ for _ in ["-onlyin", onlyin] if onlyin]]
-    output = subprocess.run(cmd, capture_output=True, text=True)
-    if output.returncode == 0:
-        return output.stdout.splitlines()
-    else:
-        raise ValueError(output.stdout)
+    output = _mdfind(query, *iter(["-onlyin", onlyin] if onlyin else []))
+    return output.stdout.splitlines()
 
 
 def count(query: str, onlyin: Optional[str] = None) -> int:
     """Get the total number of matches."""
-    cmd = ["mdfind", "-count", query, *[_ for _ in ["-onlyin", onlyin] if onlyin]]
-    output = subprocess.run(cmd, capture_output=True, text=True)
-    if output.returncode == 0:
-        return int(output.stdout)
-    else:
-        raise ValueError(output.stdout)
+    output = _mdfind("-count", query, *iter(["-onlyin", onlyin] if onlyin else []))
+    return int(output.stdout)
 
 
 def name(query: str, onlyin: Optional[str] = None) -> List[str]:
     """Get a list of files that match the given name."""
-    cmd = ["mdfind", "-name", query, *[_ for _ in ["-onlyin", onlyin] if onlyin]]
-    output = subprocess.run(cmd, capture_output=True, text=True)
-    if output.returncode == 0:
-        return output.stdout.splitlines()
-    else:
-        raise ValueError(output.stdout)
+    output = _mdfind("-name", query, *iter(["-onlyin", onlyin] if onlyin else []))
+    return output.stdout.splitlines()

@@ -1,74 +1,58 @@
 from unittest.mock import Mock, call, patch
 
-import pytest
-
 import mdfind
 
+PATHS_STDOUT = "/foo\n/bar"
+COUNT_STDOUT = "0"
 
-@patch("subprocess.run", return_value=Mock(returncode=0, stdout="one\ntwo"))
-def test_query(run):
-    result = mdfind.query("kind:image")
-    cmd = ["mdfind", "kind:image"]
-    assert run.call_args == call(cmd, capture_output=True, text=True)
-    assert result == ["one", "two"]
+MDFIND_MOCK_WITH_PATHS = Mock(returncode=0, stdout=PATHS_STDOUT)
+MDFIND_MOCK_WITH_COUNT = Mock(returncode=0, stdout=COUNT_STDOUT)
 
 
-@patch("subprocess.run", return_value=Mock(returncode=0, stdout="one\ntwo"))
-def test_query_onlyin(run):
-    result = mdfind.query("kind:image", onlyin="/Users")
-    cmd = ["mdfind", "kind:image", "-onlyin", "/Users"]
-    assert run.call_args == call(cmd, capture_output=True, text=True)
-    assert result == ["one", "two"]
+@patch("subprocess.run")
+def test_mdfind(run):
+    cmd = ["mdfind", "kind:image", "-onlyin", "~"]
+    mdfind._api._mdfind(*cmd[1:])
+    assert run.call_args == call(cmd, capture_output=True, text=True, check=True)
 
 
-@patch("subprocess.run", return_value=Mock(returncode=0, stdout="0"))
-def test_count(run):
-    result = mdfind.count("kind:image")
-    cmd = ["mdfind", "-count", "kind:image"]
-    assert run.call_args == call(cmd, capture_output=True, text=True)
-    assert result == 0
+@patch("mdfind._api._mdfind")
+def test_query_calls_mdfind_correct(_mdfind):
+    mdfind.query("kind:image", onlyin="~")
+    assert _mdfind.call_args == call("kind:image", "-onlyin", "~")
+    mdfind.query("kind:image")
+    assert _mdfind.call_args == call("kind:image")
 
 
-@patch("subprocess.run", return_value=Mock(returncode=0, stdout="0"))
-def test_count_onlyin(run):
-    result = mdfind.count("kind:image", onlyin="/Users")
-    cmd = ["mdfind", "-count", "kind:image", "-onlyin", "/Users"]
-    assert run.call_args == call(cmd, capture_output=True, text=True)
-    assert result == 0
+@patch("mdfind._api._mdfind", return_value=MDFIND_MOCK_WITH_PATHS)
+def test_query_return_splitted_list(_mdfind):
+    result = mdfind.query("kind:image", onlyin="~")
+    assert result == PATHS_STDOUT.split("\n")
 
 
-@patch("subprocess.run", return_value=Mock(returncode=0, stdout="one\ntwo"))
-def test_name(run):
-    result = mdfind.name("foo")
-    cmd = ["mdfind", "-name", "foo"]
-    assert run.call_args == call(cmd, capture_output=True, text=True)
-    assert result == ["one", "two"]
+@patch("mdfind._api._mdfind")
+def test_count_calls_mdfind_correct(_mdfind):
+    mdfind.count("kind:image", onlyin="~")
+    assert _mdfind.call_args == call("-count", "kind:image", "-onlyin", "~")
+    mdfind.count("kind:image")
+    assert _mdfind.call_args == call("-count", "kind:image")
 
 
-@patch("subprocess.run", return_value=Mock(returncode=0, stdout="one\ntwo"))
-def test_name_onlyin(run):
-    result = mdfind.name("foo", onlyin="/Users")
-    cmd = ["mdfind", "-name", "foo", "-onlyin", "/Users"]
-    assert run.call_args == call(cmd, capture_output=True, text=True)
-    assert result == ["one", "two"]
+@patch("mdfind._api._mdfind", return_value=MDFIND_MOCK_WITH_COUNT)
+def test_query_return_splitted_list(_mdfind):
+    result = mdfind.count("kind:image", onlyin="~")
+    assert result == int(COUNT_STDOUT)
 
 
-@patch("subprocess.run", return_value=Mock(returncode=1, stderr="Failed"))
-def test_query_raises_an_error(run):
-    with pytest.raises(ValueError) as excinfo:
-        mdfind.query("foo")
-        assert excinfo.value == "Failed"
+@patch("mdfind._api._mdfind")
+def test_name_calls_mdfind_correct(_mdfind):
+    mdfind.name("foo")
+    assert _mdfind.call_args == call("-name", "foo",)
+    mdfind.name("foo", onlyin="~")
+    assert _mdfind.call_args == call("-name", "foo", "-onlyin", "~")
 
 
-@patch("subprocess.run", return_value=Mock(returncode=1, stderr="Failed"))
-def test_count_raises_an_error(run):
-    with pytest.raises(ValueError) as excinfo:
-        mdfind.count("foor")
-        assert excinfo.value == "Failed"
-
-
-@patch("subprocess.run", return_value=Mock(returncode=1, stderr="Failed"))
-def test_name_raises_an_error(run):
-    with pytest.raises(ValueError) as excinfo:
-        mdfind.name("foo")
-        assert excinfo.value == "Failed"
+@patch("mdfind._api._mdfind", return_value=MDFIND_MOCK_WITH_PATHS)
+def test_name_return_splitted_list(_mdfind):
+    result = mdfind.name("foo", onlyin="~")
+    assert result == PATHS_STDOUT.split("\n")
