@@ -1,3 +1,9 @@
+pipenv:
+	python -m pip install pipenv
+
+install:
+	pipenv install --dev --keep-outdated
+
 build:
 	pipenv run python setup.py sdist bdist_wheel
 
