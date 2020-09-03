@@ -13,6 +13,7 @@ isort = "*"
 pre-commit = "*"
 twine = "*"
 wheel = "*"
+setuptools = "*"
 
 [packages]
 dataclasses = {version = "*",python_version = "< 3.7"}
