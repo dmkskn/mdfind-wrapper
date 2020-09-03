@@ -16,7 +16,6 @@ wheel = "*"
 setuptools = "*"
 
 [packages]
-dataclasses = {version = "*",python_version = "< 3.7"}
 mdfind-wrapper = {editable = true,path = "."}
 
 [pipenv]
