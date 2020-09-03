@@ -39,7 +39,7 @@ clean:
 	rm -fr .mypy_cache
 
 ci:
-	pipenv run black --check mdfind setup.py tests/
+	pipenv run black --check --verbose mdfind/ tests/ setup.py
 	pipenv run mypy mdfind
 	pipenv run pytest --exitfirst tests/
 	pipenv run pytest --cov --cov-fail-under=100
