@@ -1,29 +1,26 @@
 name: Publish
 
 on:
-  release:
-    types: [created]
+    release:
+        types: [created]
 
 jobs:
-  deploy:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: "3.7"
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pipenv
-          pipenv install --dev
-      - name: Test
-        run: |
-          make ci
-      - name: Build and publish
-        env:
-          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          make build
-          pipenv run twine upload dist/*  -u $TWINE_USERNAME -p $TWINE_PASSWORD
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set up Python
+              uses: actions/setup-python@v1
+              with:
+                  python-version: "3.7"
+            - name: Install
+              run: |
+                  python -m pip install twine wheel setuptools
+            - name: Build
+              run: |
+                  python setup.py sdist bdist_wheel
+            - name: Publish
+              uses: pypa/gh-action-pypi-publish@master
+              with:
+                  user: __token__
+                  password: ${{ secrets.PYPI_TOKEN }}

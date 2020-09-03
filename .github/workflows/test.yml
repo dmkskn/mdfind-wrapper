@@ -1,0 +1,28 @@
+name: Test
+
+on: push
+
+jobs:
+    test:
+        runs-on: macos-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Set up Python 3.7
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.7
+            - name: Install Pipenv
+              run: make pipenv
+            - name: Cache Pipenv Virtual Enviroments
+              uses: actions/cache@v2
+              id: cache-pipenv
+              with:
+                  path: ~/.local/share/virtualenvs/
+                  key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+            - name: Install
+              if: steps.cache-pipenv.outputs.cache-hit != 'true'
+              run: |
+                  make install
+            - name: Test
+              run: |
+                  make ci
