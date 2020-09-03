@@ -21,8 +21,8 @@ test:
 	pipenv run pytest --cov --cov-fail-under=100
 
 format:
+	pipenv run isort mdfind setup.py tests
 	pipenv run black mdfind setup.py tests
-	pipenv run isort -y
 
 clean:
 	rm -fr build/

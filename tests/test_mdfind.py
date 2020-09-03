@@ -48,7 +48,7 @@ def test_query_return_splitted_list(_mdfind):
 @patch("mdfind._api._mdfind")
 def test_name_calls_mdfind_correct(_mdfind):
     mdfind.name("foo")
-    assert _mdfind.call_args == call("-0", "-name", "foo",)
+    assert _mdfind.call_args == call("-0", "-name", "foo")
     mdfind.name("foo", onlyin="~")
     assert _mdfind.call_args == call("-0", "-name", "foo", "-onlyin", "~")
 
