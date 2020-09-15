@@ -57,3 +57,16 @@ def test_name_calls_mdfind_correct(_mdfind):
 def test_name_return_splitted_list(_mdfind):
     result = mdfind.name("foo", onlyin="~")
     assert result == PATHS_STDOUT.split(NUL)
+
+
+def test_iter_args():
+    args = ["-0", "-count", "kind:image"]
+    kwargs = {"onlyin": "/path", "literal": True, "interpret": False, "live": None}
+    assert list(mdfind._api._iter_args(*args, **kwargs)) == [
+        "-0",
+        "-count",
+        "kind:image",
+        "-onlyin",
+        "/path",
+        "-literal",
+    ]
