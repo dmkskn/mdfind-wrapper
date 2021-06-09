@@ -13,7 +13,7 @@ def get_long_description() -> str:
 setup(
     name="mdfind-wrapper",
     license="Unlicense",
-    version="0.1.4",
+    version="0.1.5",
     url="https://github.com/dmkskn/mdfind-wrapper",
     author="Dima Koskin",
     author_email="dmksknn@gmail.com",
